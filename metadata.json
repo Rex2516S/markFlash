@@ -1,0 +1,5 @@
+{
+  "name": "markFlash",
+  "description": "A Google AI Studio-styled low-code Markdown generator and editor powered by Gemini.",
+  "requestFramePermissions": []
+}
