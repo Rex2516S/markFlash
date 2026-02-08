@@ -8,7 +8,7 @@ import { parseMarkdownToBlocks, blocksToMarkdown } from '../utils/blockUtils';
 import { v4 as uuidv4 } from 'uuid';
 import { 
   Heading1, Heading2, Heading3, Type, Quote, Code, Image as ImageIcon, 
-  List, Minus, GripVertical, Trash2, ArrowUp, ArrowDown, Eye, Code2, Edit3, Save
+  List, Minus, GripVertical, Trash2, ArrowUp, ArrowDown, Eye, Code2, Edit3, Save, Copy, Check
 } from 'lucide-react';
 
 interface BlockEditorPanelProps {
@@ -40,6 +40,7 @@ export const BlockEditorPanel: React.FC<BlockEditorPanelProps> = ({
 }) => {
   const [blocks, setBlocks] = useState<Block[]>([]);
   const [activeTab, setActiveTab] = useState<Tab>('edit');
+  const [copied, setCopied] = useState(false);
   
   // Initial sync
   useEffect(() => {
@@ -53,6 +54,12 @@ export const BlockEditorPanel: React.FC<BlockEditorPanelProps> = ({
       setMarkdown(newMarkdown);
     }
   }, [blocks]);
+
+  const handleCopy = () => {
+    navigator.clipboard.writeText(markdown);
+    setCopied(true);
+    setTimeout(() => setCopied(false), 2000);
+  };
 
   const handleAddBlock = (type: BlockType) => {
     const newBlock: Block = {
@@ -110,24 +117,40 @@ export const BlockEditorPanel: React.FC<BlockEditorPanelProps> = ({
                 className="bg-transparent text-gray-100 font-medium text-lg focus:outline-none focus:ring-1 focus:ring-primary-500 rounded px-2 py-1 w-full max-w-md"
             />
          </div>
-         <div className="flex bg-gray-800 rounded-lg p-1 gap-1">
-            <button 
-              onClick={() => setActiveTab('edit')}
-              className={`flex items-center gap-2 px-3 py-1.5 rounded-md text-sm font-medium transition-colors ${activeTab === 'edit' ? 'bg-gray-700 text-white' : 'text-gray-400 hover:text-gray-200'}`}
+         <div className="flex items-center gap-3">
+             <div className="flex bg-gray-800 rounded-lg p-1 gap-1">
+                <button 
+                  onClick={() => setActiveTab('edit')}
+                  className={`flex items-center gap-2 px-3 py-1.5 rounded-md text-sm font-medium transition-colors ${activeTab === 'edit' ? 'bg-gray-700 text-white' : 'text-gray-400 hover:text-gray-200'}`}
+                >
+                  <Edit3 size={14} /> Edit
+                </button>
+                <button 
+                  onClick={() => setActiveTab('preview')}
+                  className={`flex items-center gap-2 px-3 py-1.5 rounded-md text-sm font-medium transition-colors ${activeTab === 'preview' ? 'bg-gray-700 text-white' : 'text-gray-400 hover:text-gray-200'}`}
+                >
+                  <Eye size={14} /> Preview
+                </button>
+                <button 
+                  onClick={() => setActiveTab('code')}
+                  className={`flex items-center gap-2 px-3 py-1.5 rounded-md text-sm font-medium transition-colors ${activeTab === 'code' ? 'bg-gray-700 text-white' : 'text-gray-400 hover:text-gray-200'}`}
+                >
+                  <Code2 size={14} /> Code
+                </button>
+             </div>
+             
+             <div className="w-px h-6 bg-gray-800 mx-1"></div>
+
+             <button 
+                onClick={handleCopy}
+                className="p-2 text-gray-400 hover:text-white hover:bg-gray-800 rounded-full transition-colors"
+                title="Copy Markdown"
             >
-              <Edit3 size={14} /> Edit
+                {copied ? <Check size={18} className="text-green-400"/> : <Copy size={18} />}
             </button>
-            <button 
-              onClick={() => setActiveTab('preview')}
-              className={`flex items-center gap-2 px-3 py-1.5 rounded-md text-sm font-medium transition-colors ${activeTab === 'preview' ? 'bg-gray-700 text-white' : 'text-gray-400 hover:text-gray-200'}`}
-            >
-              <Eye size={14} /> Preview
-            </button>
-            <button 
-              onClick={() => setActiveTab('code')}
-              className={`flex items-center gap-2 px-3 py-1.5 rounded-md text-sm font-medium transition-colors ${activeTab === 'code' ? 'bg-gray-700 text-white' : 'text-gray-400 hover:text-gray-200'}`}
-            >
-              <Code2 size={14} /> Code
+            <button className="flex items-center gap-2 bg-primary-600 hover:bg-primary-500 text-gray-950 px-4 py-2 rounded-lg text-sm font-semibold transition-colors">
+                <Save size={16} />
+                <span>Save</span>
             </button>
          </div>
       </div>
