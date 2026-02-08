@@ -17,6 +17,14 @@ export type BlockType =
   | 'table' | 'ul' | 'ol' | 'check'
   | 'quote' | 'link' | 'image' | 'separator';
 
+export interface Block {
+  id: string;
+  type: BlockType;
+  content: string;
+}
+
+export type ViewMode = 'raw' | 'block';
+
 export interface GenerationParams {
   docType: string;
   topic: string;

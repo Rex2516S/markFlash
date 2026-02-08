@@ -1,18 +1,27 @@
 import React from 'react';
 import { APP_ICON_URL } from '../constants';
-import { GeneratedDoc } from '../types';
-import { Plus, FileText, History, Settings, Github } from 'lucide-react';
+import { GeneratedDoc, ViewMode } from '../types';
+import { Plus, FileText, Settings, Github, Layout, Code } from 'lucide-react';
 
 interface SidebarProps {
   documents: GeneratedDoc[];
   currentDocId: string | null;
   onSelectDoc: (id: string) => void;
   onNewDoc: () => void;
+  viewMode: ViewMode;
+  setViewMode: (mode: ViewMode) => void;
 }
 
-export const Sidebar: React.FC<SidebarProps> = ({ documents, currentDocId, onSelectDoc, onNewDoc }) => {
+export const Sidebar: React.FC<SidebarProps> = ({ 
+  documents, 
+  currentDocId, 
+  onSelectDoc, 
+  onNewDoc,
+  viewMode,
+  setViewMode
+}) => {
   return (
-    <div className="w-64 bg-gray-950 border-r border-gray-800 flex flex-col h-full">
+    <div className="w-64 bg-gray-950 border-r border-gray-800 flex flex-col h-full shrink-0">
       <div className="p-4 border-b border-gray-800 flex items-center gap-3">
         <img src={APP_ICON_URL} alt="markFlash" className="w-8 h-8 opacity-90" />
         <span className="font-semibold text-lg tracking-tight text-gray-100">markFlash</span>
@@ -51,7 +60,22 @@ export const Sidebar: React.FC<SidebarProps> = ({ documents, currentDocId, onSel
         ))}
       </div>
 
-      <div className="p-3 border-t border-gray-800 space-y-1">
+      <div className="p-3 border-t border-gray-800 space-y-2">
+        <div className="bg-gray-900 rounded-lg p-1 flex">
+          <button 
+            onClick={() => setViewMode('raw')}
+            className={`flex-1 flex items-center justify-center gap-2 py-1.5 text-xs font-medium rounded transition-all ${viewMode === 'raw' ? 'bg-primary-600 text-white shadow' : 'text-gray-400 hover:text-gray-200'}`}
+          >
+            <Code size={14} /> Raw
+          </button>
+          <button 
+             onClick={() => setViewMode('block')}
+             className={`flex-1 flex items-center justify-center gap-2 py-1.5 text-xs font-medium rounded transition-all ${viewMode === 'block' ? 'bg-primary-600 text-white shadow' : 'text-gray-400 hover:text-gray-200'}`}
+          >
+            <Layout size={14} /> Visual
+          </button>
+        </div>
+
         <button className="w-full flex items-center gap-3 px-3 py-2 text-gray-400 hover:text-gray-200 hover:bg-gray-800 rounded-lg text-sm transition-colors">
           <Settings size={16} />
           <span>Settings</span>

@@ -1,8 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import { Sidebar } from './components/Sidebar';
 import { EditorPanel } from './components/EditorPanel';
+import { BlockEditorPanel } from './components/BlockEditorPanel';
 import { DEFAULT_MARKDOWN } from './constants';
-import { GeneratedDoc } from './types';
+import { GeneratedDoc, ViewMode } from './types';
 import { v4 as uuidv4 } from 'uuid';
 
 const App: React.FC = () => {
@@ -10,6 +11,9 @@ const App: React.FC = () => {
   const [documents, setDocuments] = useState<GeneratedDoc[]>([]);
   const [currentDocId, setCurrentDocId] = useState<string | null>(null);
   
+  // App View State
+  const [viewMode, setViewMode] = useState<ViewMode>('raw');
+
   // Current Editor State
   const [markdown, setMarkdown] = useState<string>(DEFAULT_MARKDOWN);
   const [title, setTitle] = useState<string>("Welcome to markFlash");
@@ -62,6 +66,8 @@ const App: React.FC = () => {
     setCurrentDocId(newDoc.id);
     setMarkdown("");
     setTitle("Untitled Document");
+    // Switch to visual mode for new docs usually better for beginners
+    setViewMode('block'); 
   };
 
   return (
@@ -71,13 +77,24 @@ const App: React.FC = () => {
         currentDocId={currentDocId}
         onSelectDoc={setCurrentDocId}
         onNewDoc={handleNewDoc}
+        viewMode={viewMode}
+        setViewMode={setViewMode}
       />
-      <EditorPanel 
-        markdown={markdown}
-        setMarkdown={setMarkdown}
-        title={title}
-        setTitle={setTitle}
-      />
+      {viewMode === 'raw' ? (
+        <EditorPanel 
+          markdown={markdown}
+          setMarkdown={setMarkdown}
+          title={title}
+          setTitle={setTitle}
+        />
+      ) : (
+        <BlockEditorPanel 
+          markdown={markdown}
+          setMarkdown={setMarkdown}
+          title={title}
+          setTitle={setTitle}
+        />
+      )}
     </div>
   );
 };
